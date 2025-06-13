@@ -1,4 +1,4 @@
-# GWI - Jedi Team - Engineering Challenge
+# GWI - Jedi Team - Backend Engineering Challenge
 
 Welcome to the engineering challenge for the Jedi Team at GWI!
 
