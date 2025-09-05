@@ -1,0 +1,97 @@
+{
+  "info": {
+    "name": "GWI Chatbox API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Chat",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": \"user123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/chats",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["chats"]
+        }
+      }
+    },
+    {
+      "name": "List Chats",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/chats?user_id=user123",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["chats"],
+          "query": [
+            { "key": "user_id", "value": "user123" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Chat History",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/chats/{{chatID}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["chats", "{{chatID}}"]
+        }
+      }
+    },
+    {
+      "name": "Send Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sender\": \"user123\",\n  \"text\": \"What percent of Gen Z in Nashville use Instagram?\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/chats/{{chatID}}/messages",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["chats", "{{chatID}}", "messages"]
+        }
+      }
+    },
+    {
+      "name": "Give Feedback",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"negative\": true\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/chats/{{chatID}}/messages/{{messageID}}/feedback",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["chats", "{{chatID}}", "messages", "{{messageID}}", "feedback"]
+        }
+      }
+    }
+  ]
+}
