@@ -148,6 +148,17 @@ func TestGetChatHandler(t *testing.T) {
 	}
 }
 
+func TestGetChatHandler_NotFound(t *testing.T) {
+	r := setupRouter()
+	// Try to get a chat that does not exist
+	req := httptest.NewRequest("GET", "/chats/nonexistent-id", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected 404 Not Found, got %d", w.Code)
+	}
+}
+
 func TestSendMessageHandler(t *testing.T) {
 	r := setupRouter()
 	// Create a chat first

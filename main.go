@@ -77,6 +77,7 @@ func getChatHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chat := internal.GetChat(vars["chatID"])
 	if chat == nil {
+		log.Printf("Chat not found for ID: %s", vars["chatID"])
 		http.Error(w, "chat not found", http.StatusNotFound)
 		return
 	}
