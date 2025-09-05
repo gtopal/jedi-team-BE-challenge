@@ -99,7 +99,7 @@ func TestSendMessageHandler(t *testing.T) {
 	}
 	chatID := resp["id"].(string)
 	// Send message
-	msgBody := []byte(`{"sender":"testuser","text":"Gen Z in Nashville"}`)
+	msgBody := []byte(`{"sender":"testuser","text":"What percentage of Gen Z in Nashville are interested in gaming?"}`)
 	req2 := httptest.NewRequest("POST", "/chats/"+chatID+"/messages", bytes.NewBuffer(msgBody))
 	req2.Header.Set("Content-Type", "application/json")
 	w2 := httptest.NewRecorder()
