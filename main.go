@@ -46,12 +46,14 @@ func createChatHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Creating new chat session")
-	// print the req
-	fmt.Printf("Request: %+v\n", req)
+	if req.UserID == "" {
+		http.Error(w, "user_id required", http.StatusBadRequest)
+		return
+	}
+
+	log.Printf("Creating new chat session")
 	chatID := uuid.New().String()
-	fmt.Printf("Creating chat: %s\n", chatID)
-	fmt.Println(req.UserID)
+	log.Printf("Creating chat: %s\n", chatID)
 	chat := &internal.Chat{
 		ID:        chatID,
 		UserID:    req.UserID,

@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"jedi-team-BE-challenge/internal"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -20,7 +21,7 @@ func setupRouter() *mux.Router {
 	return r
 }
 
-func TestCreateChatHandler(t *testing.T) {
+func TestCreateChatHandler_Success(t *testing.T) {
 	r := setupRouter()
 	body := []byte(`{"user_id":"testuser"}`)
 	req := httptest.NewRequest("POST", "/chats", bytes.NewBuffer(body))
@@ -36,6 +37,34 @@ func TestCreateChatHandler(t *testing.T) {
 	}
 	if resp["user_id"] != "testuser" {
 		t.Errorf("expected user_id to be testuser, got %v", resp["user_id"])
+	}
+	id, ok := resp["id"].(string)
+	if !ok || id == "" {
+		t.Errorf("expected chat id to be set, got empty")
+	}
+	if resp["title"] == "" {
+		t.Errorf("expected chat title to be set, got empty")
+	}
+	// Assert chat.ID matches resp["id"]
+	chat := internal.GetChat(id)
+	if chat == nil {
+		t.Fatalf("chat not found in storage")
+	}
+	if chat.ID != id {
+		t.Errorf("expected chat.ID to be %v, got %v", id, chat.ID)
+	}
+}
+
+func TestCreateChatHandler_Failure(t *testing.T) {
+	r := setupRouter()
+	// Send invalid JSON (missing user_id)
+	body := []byte(`{"invalid_field":"value"}`)
+	req := httptest.NewRequest("POST", "/chats", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 Bad Request, got %d", w.Code)
 	}
 }
 
