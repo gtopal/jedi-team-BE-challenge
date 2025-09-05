@@ -70,25 +70,59 @@ func TestCreateChatHandler_Failure(t *testing.T) {
 
 func TestListChatsHandler(t *testing.T) {
 	r := setupRouter()
-	// Create a chat first
-	body := []byte(`{"user_id":"testuser"}`)
-	req := httptest.NewRequest("POST", "/chats", bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-	// List chats
-	req2 := httptest.NewRequest("GET", "/chats?user_id=testuser", nil)
-	w2 := httptest.NewRecorder()
-	r.ServeHTTP(w2, req2)
-	if w2.Code != http.StatusOK {
-		t.Fatalf("expected 200, got %d", w2.Code)
-	}
-	var resp []map[string]interface{}
-	if err := json.Unmarshal(w2.Body.Bytes(), &resp); err != nil {
+	// Create first chat
+	body1 := []byte(`{"user_id":"testuser"}`)
+	req1 := httptest.NewRequest("POST", "/chats", bytes.NewBuffer(body1))
+	req1.Header.Set("Content-Type", "application/json")
+	w1 := httptest.NewRecorder()
+	r.ServeHTTP(w1, req1)
+	var resp1 map[string]interface{}
+	if err := json.Unmarshal(w1.Body.Bytes(), &resp1); err != nil {
 		t.Fatalf("invalid json: %v", err)
 	}
-	if len(resp) == 0 {
-		t.Errorf("expected at least one chat")
+	id1 := resp1["id"].(string)
+
+	// Create second chat
+	body2 := []byte(`{"user_id":"testuser"}`)
+	req2 := httptest.NewRequest("POST", "/chats", bytes.NewBuffer(body2))
+	req2.Header.Set("Content-Type", "application/json")
+	w2 := httptest.NewRecorder()
+	r.ServeHTTP(w2, req2)
+	var resp2 map[string]interface{}
+	if err := json.Unmarshal(w2.Body.Bytes(), &resp2); err != nil {
+		t.Fatalf("invalid json: %v", err)
+	}
+	id2 := resp2["id"].(string)
+
+	// List chats
+	reqList := httptest.NewRequest("GET", "/chats?user_id=testuser", nil)
+	wList := httptest.NewRecorder()
+	r.ServeHTTP(wList, reqList)
+	if wList.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d", wList.Code)
+	}
+	var listResp []map[string]interface{}
+	if err := json.Unmarshal(wList.Body.Bytes(), &listResp); err != nil {
+		t.Fatalf("invalid json: %v", err)
+	}
+	if len(listResp) != 2 {
+		t.Errorf("expected 2 chats, got %d", len(listResp))
+	}
+	// Assert both created chat IDs are in the list
+	found1, found2 := false, false
+	for _, chat := range listResp {
+		if chat["id"] == id1 {
+			found1 = true
+		}
+		if chat["id"] == id2 {
+			found2 = true
+		}
+	}
+	if !found1 {
+		t.Errorf("chat with id %s not found in list", id1)
+	}
+	if !found2 {
+		t.Errorf("chat with id %s not found in list", id2)
 	}
 }
 

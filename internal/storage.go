@@ -2,7 +2,7 @@ package internal
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"os"
 	"sync"
 )
@@ -58,7 +58,7 @@ func AddChat(chat *Chat) {
 	chats[chat.ID] = chat
 	// print the chats
 	for id, c := range chats {
-		fmt.Printf("Chat ID: %s, User ID: %s, Title: %s\n", id, c.UserID, c.Title)
+		log.Printf("Chat ID: %s, User ID: %s, Title: %s\n", id, c.UserID, c.Title)
 	}
 }
 
